@@ -18,6 +18,7 @@
 
 body{
   height:100vh;
+  width: 100vw;
   overflow:hidden;
   background: linear-gradient(160deg, var(--mist), var(--eucalyptus), var(--moss));
 }
@@ -30,6 +31,7 @@ body{
   pointer-events:none;
   animation: caer linear forwards;
   opacity:0.9;
+  z-index: 1;
 }
 
 @keyframes caer{
@@ -47,9 +49,10 @@ body{
   text-align:center;
   width:90%;
   max-width:380px;
+  z-index: 10;
 }
 
-.hidden{display:none;}
+.hidden{display:none !important;}
 
 /* --- Tarjeta / Recuadro --- */
 .card, .question-box{
@@ -57,7 +60,6 @@ body{
   border-radius:18px;
   padding:30px;
   box-shadow:0 10px 40px rgba(0,0,0,0.25);
-  z-index:10;
 }
 
 .question-box{
@@ -87,52 +89,69 @@ body{
 .btn:hover{transform:scale(1.05);}
 
 /* --- Fase final --- */
-.final{
-  display:none;
-  text-align:center;
-  color: var(--plaster);
-  padding:30px;
+#phase3 {
+  display: none; /* Se activa con JS */
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%;
+  max-width: 450px;
+  text-align: center;
+  z-index: 100;
 }
-.final img{
+
+#phase3 img{
   width:260px;
   margin-bottom:18px;
   animation: crecer 1s ease forwards;
 }
+
 @keyframes crecer{
   from{ transform:scale(.5); opacity:0; }
   to{ transform:scale(1); opacity:1; }
 }
+
 .mensaje{
   font-size:18px;
-  line-height:1.4;
-  background: rgba(0,0,0,0.25);
-  padding:18px;
+  line-height:1.6;
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--soot);
+  padding:25px;
   border-radius:14px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
 }
 
 /* --- Mensaje dinámico para NO --- */
 #msgNo{
-  position:absolute;
+  position:fixed;
   font-style:italic;
   font-size:0.9rem;
-  color: var(--eucalyptus);
+  color: white;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
   pointer-events:none;
+  z-index: 1000;
+}
+
+#noBtn {
+  z-index: 1000;
 }
 </style>
 </head>
 
 <body>
 
-<!-- --- Fase 1 --- -->
 <div id="phase1" class="phase">
   <button class="btn" onclick="startPhase2()">Presióname</button>
 </div>
 
-<!-- --- Fase 2 --- -->
 <div id="phase2" class="phase hidden">
   <div class="question-box">
     <h2>¿Quieres ser mi San Valentín?</h2>
-    <img src="ramo.png" class="ramo">
+    <img src="ramo.png" class="ramo" alt="Ramo">
     <div>
       <button class="btn" id="btn-si" onclick="goFinal()">SI</button>
       <button class="btn" id="noBtn">NO</button>
@@ -140,29 +159,27 @@ body{
   </div>
 </div>
 
-<!-- --- Fase 3 --- -->
-<div id="phase3" class="final">
-  <img src="ramo.png">
+<div id="phase3">
+  <img src="ramo.png" alt="Ramo Final">
   <div class="mensaje">
-Valeria yo te amo, no es cosa sencilla decirlo para mí, pero te quiero en mi vida, te amo profundamente; a veces actúo de algunas formas para protegerme, pero jamás dudes que te amo y que lo que siento no va a cambiar.
+    <strong>Valeria</strong>, yo te amo. No es cosa sencilla decirlo para mí, pero te quiero en mi vida. Te amo profundamente; a veces actúo de algunas formas para protegerme, pero jamás dudes que te amo y que lo que siento no va a cambiar.
   </div>
 </div>
 
-<!-- --- Mensaje dinámico para NO --- -->
 <div id="msgNo"></div>
 
 <script>
 /* --- Lluvia de lirios --- */
 function crearLirio(){
   const img = document.createElement("img");
-  img.src = "lirio.png";
+  // Nota: Asegúrate de que lirio.png esté en la misma carpeta
+  img.src = "lirio.png"; 
   img.className = "lirio";
   img.style.left = Math.random()*100 + "vw";
   img.style.animationDuration = (6 + Math.random()*6) + "s";
   document.body.appendChild(img);
-  setTimeout(()=>img.remove(),14000);
+  setTimeout(()=>img.remove(), 14000);
 }
-// Más abundante
 setInterval(crearLirio, 300);
 
 /* --- Fase 1 a Fase 2 --- */
@@ -174,34 +191,39 @@ function startPhase2(){
 /* --- Fase 2 a Fase 3 --- */
 function goFinal(){
   document.getElementById("phase2").classList.add("hidden");
-  document.getElementById("phase3").classList.remove("hidden");
+  const f3 = document.getElementById("phase3");
+  f3.style.display = "flex"; // Cambiamos display de none a flex
 }
 
-/* --- Botón NO evasivo y mensaje cerca del recuadro --- */
+/* --- Botón NO evasivo --- */
 const noBtn = document.getElementById("noBtn");
 const msgNo = document.getElementById("msgNo");
 const phrases = ["¿Segura?", "Piénsalo bien...", "¡Casi!", "Ese no es el botón jeje", "¡Ups!", "Intenta de nuevo 🌿"];
 
 function moverNo(){
-  const rect = document.querySelector(".question-box").getBoundingClientRect();
-  const x = rect.left + Math.random() * (rect.width - noBtn.offsetWidth);
-  const y = rect.top + Math.random() * (rect.height - noBtn.offsetHeight) + 40;
+  // Calculamos posiciones aleatorias dentro de la pantalla
+  const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
+  const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
   
-  noBtn.style.position = "absolute";
-  noBtn.style.left = `${x}px`;
-  noBtn.style.top = `${y}px`;
+  noBtn.style.position = "fixed";
+  noBtn.style.left = x + "px";
+  noBtn.style.top = y + "px";
 
+  // Mostrar mensaje divertido cerca del botón
   msgNo.innerText = phrases[Math.floor(Math.random() * phrases.length)];
-  msgNo.style.left = `${x}px`;
-  msgNo.style.top = `${y - 25}px`;
+  msgNo.style.left = x + "px";
+  msgNo.style.top = (y - 30) + "px";
 }
 
 noBtn.addEventListener("mouseover", moverNo);
 noBtn.addEventListener("touchstart", (e)=>{
-  e.preventDefault();
+  e.preventDefault(); // Evita clics accidentales en móvil
   moverNo();
 });
 </script>
+
 </body>
 </html>
+
+
 
