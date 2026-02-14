@@ -1,274 +1,168 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Para Mi Valentín</title>
-    <style>
-        :root {
-            --dark-green: #0a1f12;
-            --forest-green: #1a4224;
-            --medium-green: #2d6a4f;
-            --light-green: #95d5b2;
-            --glow-green: #b7e4c7;
-            --white: #f8f9fa;
-        }
+<meta charset="UTF-8">
+<title>Para ti 💚</title>
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Georgia', serif; }
+<style>
+body{
+  margin:0;
+  overflow:hidden;
+  font-family: "Segoe UI", sans-serif;
+  background: linear-gradient(135deg,#0b3d2e,#145c43,#1f7a5a,#f5efe6);
+  color:#fff;
+}
 
-        body {
-            background: linear-gradient(135deg, var(--dark-green), var(--forest-green), var(--dark-green));
-            height: 100vh;
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: var(--white);
-        }
+/* ===== lluvia lirios ===== */
+.lirio{
+  position:fixed;
+  top:-60px;
+  width:40px;
+  pointer-events:none;
+  animation: caer linear infinite;
+  opacity:.9;
+}
 
-        /* --- Fondos y Elementos Decorativos --- */
-        .lily-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none;
-            z-index: 1;
-            opacity: 0.2;
-            background-image: url('https://www.transparenttextures.com/patterns/natural-paper.png');
-        }
+@keyframes caer{
+  to{
+    transform: translateY(110vh) rotate(360deg);
+  }
+}
 
-        /* --- FASES --- */
-        .phase {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            transition: opacity 0.8s ease, transform 0.8s ease;
-            z-index: 10;
-        }
+/* ===== pantallas ===== */
+.pantalla{
+  position:absolute;
+  width:100%;
+  height:100%;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  flex-direction:column;
+  text-align:center;
+}
 
-        .hidden { opacity: 0; pointer-events: none; transform: scale(0.9); }
+.oculto{
+  display:none;
+}
 
-        /* Botones Generales */
-        .btn {
-            padding: 15px 40px;
-            font-size: 1.2rem;
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
+/* ===== botones ===== */
+button{
+  padding:14px 28px;
+  font-size:18px;
+  border:none;
+  border-radius:12px;
+  cursor:pointer;
+  background:#f5efe6;
+  color:#0b3d2e;
+  font-weight:bold;
+  box-shadow:0 6px 18px rgba(0,0,0,.3);
+  transition:.2s;
+}
 
-        /* --- FASE 1 --- */
-        #phase1 .btn-main {
-            background: linear-gradient(45deg, var(--medium-green), var(--light-green));
-            color: var(--dark-green);
-            font-weight: bold;
-            border: 2px solid var(--glow-green);
-        }
-        #phase1 .btn-main:hover { transform: scale(1.1); box-shadow: 0 0 20px var(--light-green); }
+button:hover{
+  transform:scale(1.08);
+}
 
-        /* --- FASE 2 --- */
-        .title-valentine {
-            font-size: 2.5rem;
-            text-align: center;
-            margin-bottom: 40px;
-            text-shadow: 0 0 10px var(--light-green);
-            animation: fadeInZoom 1s ease-out;
-        }
+/* ===== recuadro ===== */
+.cuadro{
+  background: rgba(255,255,255,.15);
+  backdrop-filter: blur(8px);
+  padding:30px;
+  border-radius:20px;
+  box-shadow:0 10px 30px rgba(0,0,0,.4);
+}
 
-        .container-buttons {
-            display: flex;
-            gap: 20px;
-            position: relative;
-            width: 100%;
-            justify-content: center;
-            height: 100px;
-            align-items: center;
-        }
+/* ===== ramo ===== */
+.ramo{
+  width:220px;
+  margin:20px;
+  transition:1s;
+}
 
-        #btn-si {
-            background: #27ae60;
-            color: white;
-            box-shadow: 0 0 20px rgba(39, 174, 96, 0.6);
-        }
+.grande{
+  width:420px;
+}
 
-        #btn-no {
-            background: #4a5d4e;
-            color: #bdc3c7;
-            position: absolute;
-            transition: all 0.2s ease;
-        }
-
-        #message-no {
-            position: absolute;
-            font-style: italic;
-            font-size: 0.9rem;
-            color: var(--light-green);
-            pointer-events: none;
-        }
-
-        /* --- FASE 3 --- */
-        .gallery {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            max-width: 90%;
-            margin-top: 20px;
-        }
-
-        .photo-frame {
-            width: 150px;
-            height: 150px;
-            background: var(--medium-green);
-            border-radius: 15px;
-            border: 3px solid var(--glow-green);
-            overflow: hidden;
-            animation: slideUp 0.8s ease forwards;
-            opacity: 0;
-        }
-
-        .photo-frame img { width: 100%; height: 100%; object-fit: cover; }
-
-        .final-text {
-            text-align: center;
-            max-width: 80%;
-            margin-bottom: 20px;
-            line-height: 1.6;
-        }
-
-        /* --- LIRIOS ANIMADOS --- */
-        .lily-petal {
-            position: fixed;
-            z-index: 5;
-            pointer-events: none;
-            filter: drop-shadow(0 0 5px rgba(255,255,255,0.3));
-        }
-
-        @keyframes fall {
-            0% { transform: translateY(-10vh) rotate(0deg); opacity: 0; }
-            10% { opacity: 1; }
-            100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
-        }
-
-        @keyframes fadeInZoom {
-            from { opacity: 0; transform: scale(0.5); }
-            to { opacity: 1; transform: scale(1); }
-        }
-
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @media (max-width: 600px) {
-            .title-valentine { font-size: 1.8rem; }
-            .photo-frame { width: 120px; height: 120px; }
-        }
-    </style>
+/* ===== mensaje final ===== */
+.mensaje{
+  max-width:700px;
+  font-size:22px;
+  line-height:1.5;
+  background: rgba(0,0,0,.35);
+  padding:25px;
+  border-radius:16px;
+}
+</style>
 </head>
+
 <body>
 
-    <div class="lily-overlay"></div>
+<!-- ===== FASE 1 ===== -->
+<div id="fase1" class="pantalla">
+  <button onclick="irFase2()">Presióname</button>
+</div>
 
-    <section id="phase1" class="phase">
-        <div style="margin-bottom: 30px; opacity: 0.6;">
-            <svg width="80" height="80" viewBox="0 0 100 100" fill="var(--light-green)">
-                <path d="M50 10 C60 40 90 50 50 90 C10 50 40 40 50 10 Z" opacity="0.5"/>
-                <path d="M50 20 C70 45 80 70 50 85 C20 70 30 45 50 20 Z" />
-            </svg>
-        </div>
-        <button class="btn btn-main" onclick="startExperience()">Presióname</button>
-    </section>
+<!-- ===== FASE 2 ===== -->
+<div id="fase2" class="pantalla oculto">
+  <div class="cuadro">
+    <h2>¿Quieres ser mi San Valentín?</h2>
+    <img src="lirio.png" class="ramo">
+    <div style="margin-top:20px">
+      <button onclick="irFase3()">SI</button>
+      <button id="noBtn">NO</button>
+    </div>
+  </div>
+</div>
 
-    <section id="phase2" class="phase hidden">
-        <h1 class="title-valentine">¿Quieres ser mi San Valentín?</h1>
-        <div class="container-buttons">
-            <button id="btn-si" class="btn" onclick="goFinal()">¡SÍ!</button>
-            <button id="btn-no" class="btn">No</button>
-            <div id="message-no"></div>
-        </div>
-    </section>
+<!-- ===== FASE 3 ===== -->
+<div id="fase3" class="pantalla oculto">
+  <img src="lirio.png" id="ramoFinal" class="ramo grande">
+  <div class="mensaje">
+    Valeria yo te amo, no es cosa sencilla decirlo para mí, pero te quiero en mi vida.
+    Te amo profundamente. A veces actúo de algunas formas para protegerme,
+    pero jamás dudes que te amo y que lo que siento no va a cambiar.
+  </div>
+</div>
 
-    <section id="phase3" class="phase hidden">
-        <h1 style="color: var(--glow-green); margin-bottom: 10px;">¡Sabía que dirías que sí!</h1>
-        <p class="final-text">Eres lo más bonito que me ha pasado. Gracias por iluminar mis días como los lirios en primavera. ¡Te amo muchísimo!</p>
-        
-        <div class="gallery">
-            <div class="photo-frame" style="animation-delay: 0.2s;"><img src="https://via.placeholder.com/150/1a4224/ffffff?text=Nuestra+Foto+1" alt="Foto"></div>
-            <div class="photo-frame" style="animation-delay: 0.4s;"><img src="https://via.placeholder.com/150/1a4224/ffffff?text=Nuestra+Foto+2" alt="Foto"></div>
-            <div class="photo-frame" style="animation-delay: 0.6s;"><img src="https://via.placeholder.com/150/1a4224/ffffff?text=Nuestra+Foto+3" alt="Foto"></div>
-            <div class="photo-frame" style="animation-delay: 0.8s;"><img src="https://via.placeholder.com/150/1a4224/ffffff?text=Nuestra+Foto+4" alt="Foto"></div>
-        </div>
-    </section>
+<script>
+/* ===== lluvia de lirios ===== */
+function crearLirio(){
+  const img = document.createElement("img");
+  img.src = "lirio.png";
+  img.className = "lirio";
+  img.style.left = Math.random()*100+"vw";
+  img.style.animationDuration = (8+Math.random()*6)+"s";
+  img.style.transform = "rotate("+Math.random()*360+"deg)";
+  document.body.appendChild(img);
 
-    <script>
-        const phrases = ["¿Segura?", "Piénsalo bien...", "¡Casi!", "Ese no es el botón jeje", "¡Ups!", "Intenta de nuevo 🌿"];
-        
-        // Función para crear lluvia de lirios
-        function createLilies(amount) {
-            for (let i = 0; i < amount; i++) {
-                setTimeout(() => {
-                    const lily = document.createElement('div');
-                    lily.className = 'lily-petal';
-                    // SVG de un lirio estilizado
-                    lily.innerHTML = `
-                        <svg width="40" height="40" viewBox="0 0 100 100">
-                            <path d="M50 10 Q70 40 90 50 Q70 60 50 90 Q30 60 10 50 Q30 40 50 10" fill="#e0f2f1" opacity="0.8"/>
-                            <circle cx="50" cy="50" r="5" fill="#fdd835"/>
-                        </svg>`;
-                    lily.style.left = Math.random() * 100 + 'vw';
-                    lily.style.top = '-50px';
-                    lily.style.animation = `fall ${3 + Math.random() * 3}s linear forwards`;
-                    document.body.appendChild(lily);
-                    
-                    setTimeout(() => lily.remove(), 6000);
-                }, i * 100);
-            }
-        }
+  setTimeout(()=>img.remove(),15000);
+}
 
-        function startExperience() {
-            createLilies(50);
-            document.getElementById('phase1').classList.add('hidden');
-            setTimeout(() => {
-                document.getElementById('phase2').classList.remove('hidden');
-            }, 800);
-        }
+setInterval(crearLirio,700);
 
-        // Lógica del botón "No" evasivo
-        const btnNo = document.getElementById('btn-no');
-        const msgNo = document.getElementById('message-no');
+/* ===== fases ===== */
+function irFase2(){
+  document.getElementById("fase1").classList.add("oculto");
+  document.getElementById("fase2").classList.remove("oculto");
+}
 
-        function moveButton() {
-            const x = Math.random() * (window.innerWidth - btnNo.offsetWidth);
-            const y = Math.random() * (window.innerHeight - btnNo.offsetHeight);
-            
-            btnNo.style.left = `${x}px`;
-            btnNo.style.top = `${y}px`;
-            
-            msgNo.innerText = phrases[Math.floor(Math.random() * phrases.length)];
-            msgNo.style.left = `${x}px`;
-            msgNo.style.top = `${y - 30}px`;
-        }
+function irFase3(){
+  document.getElementById("fase2").classList.add("oculto");
+  document.getElementById("fase3").classList.remove("oculto");
+}
 
-        btnNo.addEventListener('mouseover', moveButton);
-        btnNo.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            moveButton();
-        });
+/* ===== botón NO escapa ===== */
+const noBtn = document.getElementById("noBtn");
 
-        function goFinal() {
-            createLilies(30);
-            document.getElementById('phase2').classList.add('hidden');
-            setTimeout(() => {
-                document.getElementById('phase3').classList.remove('hidden');
-            }, 800);
-        }
-    </script>
+noBtn.addEventListener("mouseover", moverNo);
+noBtn.addEventListener("click", moverNo);
+
+function moverNo(){
+  noBtn.style.position="absolute";
+  noBtn.style.left = Math.random()*80 + "%";
+  noBtn.style.top  = Math.random()*80 + "%";
+}
+</script>
+
 </body>
 </html>
