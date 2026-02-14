@@ -2,34 +2,35 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-
-<!-- Bloquear zoom -->
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-
-<title>Para ti</title>
+<title>Para Mi Valentín</title>
 
 <style>
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-  font-family: 'Segoe UI', sans-serif;
+/* --- Paleta de colores --- */
+:root{
+  --eucalyptus: #98AA9D;
+  --mist: #B3C9D6;
+  --plaster: #F2EFE2;
+  --soot: #2D3536;
+  --moss: #697C70;
 }
 
+/* --- Reseteo y cuerpo --- */
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
 body{
   height:100vh;
   overflow:hidden;
-  background: linear-gradient(160deg, #0f2a1f, #1c3d2e, #2b5a44);
+  background: linear-gradient(160deg, var(--mist), var(--eucalyptus), var(--moss));
 }
 
-/* lluvia de lirios */
+/* --- Lluvia de lirios --- */
 .lirio{
   position:fixed;
   top:-50px;
   width:32px;
   pointer-events:none;
   animation: caer linear forwards;
-  opacity:.9;
+  opacity:0.9;
 }
 
 @keyframes caer{
@@ -38,29 +39,40 @@ body{
   }
 }
 
-/* tarjeta central */
-.card{
+/* --- Fases --- */
+.phase{
   position:absolute;
   top:50%;
   left:50%;
   transform:translate(-50%,-50%);
-  background: #f5f7f6;
-  padding:30px;
-  border-radius:18px;
-  box-shadow:0 10px 40px rgba(0,0,0,.35);
   text-align:center;
   width:90%;
-  max-width:360px;
+  max-width:380px;
 }
 
-/* ramo */
+.hidden{display:none;}
+
+/* --- Tarjeta / Recuadro --- */
+.card, .question-box{
+  background: var(--plaster);
+  border-radius:18px;
+  padding:30px;
+  box-shadow:0 10px 40px rgba(0,0,0,0.25);
+  z-index:10;
+}
+
+.question-box{
+  color: var(--soot);
+}
+
+/* --- Ramo --- */
 .ramo{
   width:170px;
   margin-bottom:18px;
-  transition: all .8s ease;
+  transition: all 0.8s ease;
 }
 
-/* botones */
+/* --- Botones --- */
 .btn{
   border:none;
   padding:12px 22px;
@@ -68,65 +80,83 @@ body{
   margin:6px;
   font-size:16px;
   cursor:pointer;
-  background:#1c3d2e;
-  color:white;
+  background: var(--moss);
+  color: var(--plaster);
   box-shadow:0 4px 10px rgba(0,0,0,.2);
+  transition: transform 0.2s ease;
 }
+.btn:hover{transform:scale(1.05);}
 
-.btn:hover{
-  transform:scale(1.05);
-}
-
-/* fase final */
+/* --- Fase final --- */
 .final{
   display:none;
   text-align:center;
-  color:#ecf5f0;
+  color: var(--plaster);
   padding:30px;
 }
-
 .final img{
   width:260px;
   margin-bottom:18px;
   animation: crecer 1s ease forwards;
 }
-
 @keyframes crecer{
   from{ transform:scale(.5); opacity:0; }
   to{ transform:scale(1); opacity:1; }
 }
-
 .mensaje{
   font-size:18px;
   line-height:1.4;
-  background: rgba(0,0,0,.25);
+  background: rgba(0,0,0,0.25);
   padding:18px;
   border-radius:14px;
+}
+
+/* --- Mensaje del NO --- */
+#msgNo{
+  position:absolute;
+  font-style:italic;
+  font-size:0.9rem;
+  color: var(--eucalyptus);
+  pointer-events:none;
 }
 </style>
 </head>
 
 <body>
 
-<!-- tarjeta -->
-<div class="card" id="card">
-  <img src="ramo.png" class="ramo">
-  <div>
-    <button class="btn" onclick="aceptar()">SI</button>
-    <button class="btn">NO</button>
+<!-- --- Fase 1 --- -->
+<div id="phase1" class="phase">
+  <div class="card">
+    <img src="ramo.png" class="ramo">
+    <button class="btn" onclick="startPhase2()">Presióname</button>
   </div>
 </div>
 
-<!-- fase final -->
-<div class="final" id="final">
+<!-- --- Fase 2 --- -->
+<div id="phase2" class="phase hidden">
+  <div class="question-box">
+    <h2>¿Quieres ser mi San Valentín?</h2>
+    <img src="ramo.png" class="ramo">
+    <div>
+      <button class="btn" id="btn-si" onclick="goFinal()">SI</button>
+      <button class="btn" id="noBtn">NO</button>
+    </div>
+  </div>
+</div>
+
+<!-- --- Fase 3 --- -->
+<div id="phase3" class="final">
   <img src="ramo.png">
   <div class="mensaje">
 Valeria yo te amo, no es cosa sencilla decirlo para mí, pero te quiero en mi vida, te amo profundamente; a veces actúo de algunas formas para protegerme, pero jamás dudes que te amo y que lo que siento no va a cambiar.
   </div>
 </div>
 
+<!-- --- Mensaje dinámico para NO --- -->
+<div id="msgNo"></div>
+
 <script>
-/* lluvia de lirios */
+/* --- Lluvia de lirios --- */
 function crearLirio(){
   const img = document.createElement("img");
   img.src = "lirio.png";
@@ -136,15 +166,43 @@ function crearLirio(){
   document.body.appendChild(img);
   setTimeout(()=>img.remove(),14000);
 }
-
 setInterval(crearLirio, 900);
 
-/* fase aceptar */
-function aceptar(){
-  document.getElementById("card").style.display="none";
-  document.getElementById("final").style.display="block";
+/* --- Fase 1 a Fase 2 --- */
+function startPhase2(){
+  document.getElementById("phase1").classList.add("hidden");
+  document.getElementById("phase2").classList.remove("hidden");
 }
-</script>
 
+/* --- Fase 2 a Fase 3 --- */
+function goFinal(){
+  document.getElementById("phase2").classList.add("hidden");
+  document.getElementById("phase3").classList.remove("hidden");
+}
+
+/* --- Botón NO evasivo --- */
+const noBtn = document.getElementById("noBtn");
+const msgNo = document.getElementById("msgNo");
+const phrases = ["¿Segura?", "Piénsalo bien...", "¡Casi!", "Ese no es el botón jeje", "¡Ups!", "Intenta de nuevo 🌿"];
+
+function moverNo(){
+  const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
+  const y = Math.random() * (window.innerHeight - noBtn.offsetHeight - 50);
+  noBtn.style.position = "absolute";
+  noBtn.style.left = `${x}px`;
+  noBtn.style.top = `${y}px`;
+
+  msgNo.innerText = phrases[Math.floor(Math.random() * phrases.length)];
+  msgNo.style.left = `${x}px`;
+  msgNo.style.top = `${y - 25}px`;
+}
+
+// Eventos
+noBtn.addEventListener("mouseover", moverNo);
+noBtn.addEventListener("touchstart", (e)=>{
+  e.preventDefault();
+  moverNo();
+});
+</script>
 </body>
 </html>
