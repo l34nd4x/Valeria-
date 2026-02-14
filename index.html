@@ -2,24 +2,33 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Para ti 💚</title>
+
+<!-- Bloquear zoom -->
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<title>Para ti</title>
 
 <style>
-body{
+*{
   margin:0;
-  overflow:hidden;
-  font-family: "Segoe UI", sans-serif;
-  background: linear-gradient(135deg,#0b3d2e,#145c43,#1f7a5a,#f5efe6);
-  color:#fff;
+  padding:0;
+  box-sizing:border-box;
+  font-family: 'Segoe UI', sans-serif;
 }
 
-/* ===== lluvia lirios ===== */
+body{
+  height:100vh;
+  overflow:hidden;
+  background: linear-gradient(160deg, #0f2a1f, #1c3d2e, #2b5a44);
+}
+
+/* lluvia de lirios */
 .lirio{
   position:fixed;
-  top:-60px;
-  width:40px;
+  top:-50px;
+  width:32px;
   pointer-events:none;
-  animation: caer linear infinite;
+  animation: caer linear forwards;
   opacity:.9;
 }
 
@@ -29,142 +38,113 @@ body{
   }
 }
 
-/* ===== pantallas ===== */
-.pantalla{
+/* tarjeta central */
+.card{
   position:absolute;
-  width:100%;
-  height:100%;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  flex-direction:column;
-  text-align:center;
-}
-
-.oculto{
-  display:none;
-}
-
-/* ===== botones ===== */
-button{
-  padding:14px 28px;
-  font-size:18px;
-  border:none;
-  border-radius:12px;
-  cursor:pointer;
-  background:#f5efe6;
-  color:#0b3d2e;
-  font-weight:bold;
-  box-shadow:0 6px 18px rgba(0,0,0,.3);
-  transition:.2s;
-}
-
-button:hover{
-  transform:scale(1.08);
-}
-
-/* ===== recuadro ===== */
-.cuadro{
-  background: rgba(255,255,255,.15);
-  backdrop-filter: blur(8px);
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  background: #f5f7f6;
   padding:30px;
-  border-radius:20px;
-  box-shadow:0 10px 30px rgba(0,0,0,.4);
+  border-radius:18px;
+  box-shadow:0 10px 40px rgba(0,0,0,.35);
+  text-align:center;
+  width:90%;
+  max-width:360px;
 }
 
-/* ===== ramo ===== */
+/* ramo */
 .ramo{
-  width:220px;
-  margin:20px;
-  transition:1s;
+  width:170px;
+  margin-bottom:18px;
+  transition: all .8s ease;
 }
 
-.grande{
-  width:420px;
+/* botones */
+.btn{
+  border:none;
+  padding:12px 22px;
+  border-radius:12px;
+  margin:6px;
+  font-size:16px;
+  cursor:pointer;
+  background:#1c3d2e;
+  color:white;
+  box-shadow:0 4px 10px rgba(0,0,0,.2);
 }
 
-/* ===== mensaje final ===== */
+.btn:hover{
+  transform:scale(1.05);
+}
+
+/* fase final */
+.final{
+  display:none;
+  text-align:center;
+  color:#ecf5f0;
+  padding:30px;
+}
+
+.final img{
+  width:260px;
+  margin-bottom:18px;
+  animation: crecer 1s ease forwards;
+}
+
+@keyframes crecer{
+  from{ transform:scale(.5); opacity:0; }
+  to{ transform:scale(1); opacity:1; }
+}
+
 .mensaje{
-  max-width:700px;
-  font-size:22px;
-  line-height:1.5;
-  background: rgba(0,0,0,.35);
-  padding:25px;
-  border-radius:16px;
+  font-size:18px;
+  line-height:1.4;
+  background: rgba(0,0,0,.25);
+  padding:18px;
+  border-radius:14px;
 }
 </style>
 </head>
 
 <body>
 
-<!-- ===== FASE 1 ===== -->
-<div id="fase1" class="pantalla">
-  <button onclick="irFase2()">Presióname</button>
-</div>
-
-<!-- ===== FASE 2 ===== -->
-<div id="fase2" class="pantalla oculto">
-  <div class="cuadro">
-    <h2>¿Quieres ser mi San Valentín?</h2>
-    <img src="lirio.png" class="ramo">
-    <div style="margin-top:20px">
-      <button onclick="irFase3()">SI</button>
-      <button id="noBtn">NO</button>
-    </div>
+<!-- tarjeta -->
+<div class="card" id="card">
+  <img src="ramo.png" class="ramo">
+  <div>
+    <button class="btn" onclick="aceptar()">SI</button>
+    <button class="btn">NO</button>
   </div>
 </div>
 
-<!-- ===== FASE 3 ===== -->
-<div id="fase3" class="pantalla oculto">
-  <img src="lirio.png" id="ramoFinal" class="ramo grande">
+<!-- fase final -->
+<div class="final" id="final">
+  <img src="ramo.png">
   <div class="mensaje">
-    Valeria yo te amo, no es cosa sencilla decirlo para mí, pero te quiero en mi vida.
-    Te amo profundamente. A veces actúo de algunas formas para protegerme,
-    pero jamás dudes que te amo y que lo que siento no va a cambiar.
+Valeria yo te amo, no es cosa sencilla decirlo para mí, pero te quiero en mi vida, te amo profundamente; a veces actúo de algunas formas para protegerme, pero jamás dudes que te amo y que lo que siento no va a cambiar.
   </div>
 </div>
 
 <script>
-/* ===== lluvia de lirios ===== */
+/* lluvia de lirios */
 function crearLirio(){
   const img = document.createElement("img");
   img.src = "lirio.png";
   img.className = "lirio";
-  img.style.left = Math.random()*100+"vw";
-  img.style.animationDuration = (8+Math.random()*6)+"s";
-  img.style.transform = "rotate("+Math.random()*360+"deg)";
+  img.style.left = Math.random()*100 + "vw";
+  img.style.animationDuration = (8 + Math.random()*6) + "s";
   document.body.appendChild(img);
-
-  setTimeout(()=>img.remove(),15000);
+  setTimeout(()=>img.remove(),14000);
 }
 
-setInterval(crearLirio,700);
+setInterval(crearLirio, 900);
 
-/* ===== fases ===== */
-function irFase2(){
-  document.getElementById("fase1").classList.add("oculto");
-  document.getElementById("fase2").classList.remove("oculto");
-}
-
-function irFase3(){
-  document.getElementById("fase2").classList.add("oculto");
-  document.getElementById("fase3").classList.remove("oculto");
-}
-
-/* ===== botón NO escapa ===== */
-const noBtn = document.getElementById("noBtn");
-
-noBtn.addEventListener("mouseover", moverNo);
-noBtn.addEventListener("click", moverNo);
-
-function moverNo(){
-  noBtn.style.position="absolute";
-  noBtn.style.left = Math.random()*80 + "%";
-  noBtn.style.top  = Math.random()*80 + "%";
+/* fase aceptar */
+function aceptar(){
+  document.getElementById("card").style.display="none";
+  document.getElementById("final").style.display="block";
 }
 </script>
 
 </body>
 </html>
-
-
